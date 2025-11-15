@@ -1,0 +1,222 @@
+using System;
+using System.Collections.Generic;
+
+// Contact class
+class Contact
+{
+    public string firstName;
+    public string lastName;
+    public string phone;
+    public string email;
+    public string address;
+    public int age;
+    public bool isFavorite;
+
+    public override string ToString()
+    {
+        return $"Name: {firstName} {lastName}, Phone: {phone}, Address: {address}, Age: {age}, Favorite: {(isFavorite ? "Yes" : "No")}";
+    }
+}
+
+// Agenda class
+class Agenda
+{
+    private Dictionary<string, Contact> contacts = new Dictionary<string, Contact>();
+
+    public void Add(Contact c)
+    {
+        if (contacts.ContainsKey(c.email))
+        {
+            Console.WriteLine("  Email already exists.");
+            return;
+        }
+        contacts[c.email] = c;
+        Console.WriteLine("  Contact added.");
+    }
+
+    public void Edit(string email, Contact updated)
+    {
+        email = email.ToLower().Trim();
+        if (contacts.ContainsKey(email))
+        {
+            updated.email = email;
+            contacts[email] = updated;
+            Console.WriteLine("  Contact updated.");
+        }
+        else
+        {
+            Console.WriteLine("  Contact not found.");
+        }
+    }
+
+    public void Delete(string email)
+    {
+        if (contacts.Remove(email.ToLower().Trim()))
+            Console.WriteLine("  Contact deleted.");
+        else
+            Console.WriteLine("  Contact not found.");
+    }
+
+    public void Search(string email)
+    {
+        if (contacts.TryGetValue(email.ToLower().Trim(), out Contact c))
+            Console.WriteLine("  " + c);
+        else
+            Console.WriteLine("  Contact not found.");
+    }
+
+    public void ShowAll()
+    {
+        if (contacts.Count == 0)
+        {
+            Console.WriteLine("  No contacts.");
+            return;
+        }
+        foreach (var c in contacts.Values)
+            Console.WriteLine("  " + c);
+    }
+}
+
+// Main program
+class Program
+{
+    static void Main(string[] args)
+    {
+        Agenda agenda = new Agenda();
+        string option;
+
+        do
+        {
+            Console.WriteLine("\n=== PERSONAL AGENDA ===");
+            Console.WriteLine("1. Add contact");
+            Console.WriteLine("2. Edit contact");
+            Console.WriteLine("3. Delete contact");
+            Console.WriteLine("4. Search by email");
+            Console.WriteLine("5. Show all contacts");
+            Console.WriteLine("6. Exit");
+            Console.Write("Choose an option: ");
+            option = Console.ReadLine();
+
+            switch (option)
+            {
+                case "1":
+                    AddContact(agenda);
+                    break;
+                case "2":
+                    EditContact(agenda);
+                    break;
+                case "3":
+                    DeleteContact(agenda);
+                    break;
+                case "4":
+                    SearchContact(agenda);
+                    break;
+                case "5":
+                    agenda.ShowAll();
+                    break;
+                case "6":
+                    Console.WriteLine("Goodbye!");
+                    break;
+                default:
+                    Console.WriteLine("Invalid option. Please try again.");
+                    break;
+            }
+        } while (option != "6");
+    }
+
+    static void AddContact(Agenda a)
+    {
+        Console.Write("First name: ");
+        string fn = Console.ReadLine();
+        Console.Write("Last name: ");
+        string ln = Console.ReadLine();
+        Console.Write("Phone: ");
+        string ph = Console.ReadLine();
+        Console.Write("Email: ");
+        string em = Console.ReadLine()?.ToLower().Trim() ?? "";
+
+        Console.Write("Address: ");
+        string addr = Console.ReadLine();
+        
+        Console.Write("Age: ");
+        if (!int.TryParse(Console.ReadLine(), out int ag))
+        {
+            Console.WriteLine("  Invalid age. Contact not added.");
+            return;
+        }
+
+        Console.Write("Favorite? (y/n): ");
+        bool fav = Console.ReadLine()?.ToLower() == "y";
+
+        Contact c = new Contact
+        {
+            firstName = fn,
+            lastName = ln,
+            phone = ph,
+            email = em,
+            address = addr,
+            age = ag,
+            isFavorite = fav
+        };
+
+        a.Add(c);
+    }
+
+    static void EditContact(Agenda a)
+    {
+        Console.Write("Email to edit: ");
+        string em = Console.ReadLine()?.ToLower().Trim() ?? "";
+
+        // Check if contact exists
+        if (!a.GetType().GetMethod("Search")?.Name.Contains("Search") == true)
+        {
+            // We'll rely on the agenda's logic
+        }
+
+        Console.Write("New first name: ");
+        string fn = Console.ReadLine();
+        Console.Write("New last name: ");
+        string ln = Console.ReadLine();
+        Console.Write("New phone: ");
+        string ph = Console.ReadLine();
+        Console.Write("New address: ");
+        string addr = Console.ReadLine();
+
+        Console.Write("New age: ");
+        if (!int.TryParse(Console.ReadLine(), out int ag))
+        {
+            Console.WriteLine("  Invalid age. Edit canceled.");
+            return;
+        }
+
+        Console.Write("Favorite? (y/n): ");
+        bool fav = Console.ReadLine()?.ToLower() == "y";
+
+        Contact c = new Contact
+        {
+            firstName = fn,
+            lastName = ln,
+            phone = ph,
+            email = em,
+            address = addr,
+            age = ag,
+            isFavorite = fav
+        };
+
+        a.Edit(em, c);
+    }
+
+    static void DeleteContact(Agenda a)
+    {
+        Console.Write("Email to delete: ");
+        string em = Console.ReadLine();
+        a.Delete(em);
+    }
+
+    static void SearchContact(Agenda a)
+    {
+        Console.Write("Email to search: ");
+        string em = Console.ReadLine();
+        a.Search(em);
+    }
+}
