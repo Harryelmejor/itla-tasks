@@ -1,0 +1,24 @@
+using System;
+
+public class Client
+{
+    public int Id;
+    public string Name;
+    public string Phone;
+    public string Email;
+    public string Address;
+
+    public Client(int id, string name, string phone, string email, string address)
+    {
+        Id = id;
+        Name = name;
+        Phone = phone;
+        Email = email;
+        Address = address;
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"ID: {Id} | Name: {Name} | Phone: {Phone} | Email: {Email} | Address: {Address}");
+    }
+}
