@@ -1,0 +1,24 @@
+using System;
+
+public class Employee
+{
+    public int Id;
+    public string Name;
+    public string Phone;
+    public string Email;
+    public string Availability;
+
+    public Employee(int id, string name, string phone, string email, string availability)
+    {
+        Id = id;
+        Name = name;
+        Phone = phone;
+        Email = email;
+        Availability = availability;
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"ID: {Id} | Name: {Name} | Phone: {Phone} | Email: {Email} | Availability: {Availability}");
+    }
+}
