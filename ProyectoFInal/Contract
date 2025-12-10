@@ -1,0 +1,32 @@
+using System;
+
+public class Contract
+{
+    public int Id;
+    public Client Client;
+    public Employee Employee;
+    public Service Service;
+    public string DaysOfWeek;
+    public bool IsRecurring;
+
+    public Contract(int id, Client client, Employee employee, Service service, string daysOfWeek, bool isRecurring)
+    {
+        Id = id;
+        Client = client;
+        Employee = employee;
+        Service = service;
+        DaysOfWeek = daysOfWeek;
+        IsRecurring = isRecurring;
+    }
+
+    public void Display()
+    {
+        Console.WriteLine($"=== CONTRACT #{Id} ===");
+        Console.WriteLine($"Client: {Client.Name}");
+        Console.WriteLine($"Employee: {Employee.Name}");
+        Console.WriteLine($"Service: {Service.Name} (${Service.Price:F2})");
+        Console.WriteLine($"Day(s): {DaysOfWeek}");
+        Console.WriteLine($"Recurring: {(IsRecurring ? "Yes" : "No")}");
+        Console.WriteLine("-----------------------------");
+    }
+}
