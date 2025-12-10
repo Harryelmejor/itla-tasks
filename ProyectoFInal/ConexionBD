@@ -1,0 +1,229 @@
+using Microsoft.Data.SqlClient;
+using System.Data;
+
+public static class Database
+{
+    private static string connectionString =
+        @"Server=HARRISON\SQLEXPRESS01; Database=CleaningServiceDB; Integrated Security=True; TrustServerCertificate=True;";
+
+    // ===============================
+    //             CLIENTS
+    // ===============================
+
+    public static void InsertClient(string name, string phone, string email, string address)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string query = "INSERT INTO Clients (Name, Phone, Email, Address) VALUES (@n, @p, @e, @a)";
+        SqlCommand cmd = new SqlCommand(query, conn);
+
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", phone);
+        cmd.Parameters.AddWithValue("@e", email);
+        cmd.Parameters.AddWithValue("@a", address);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void DeleteClient(int id)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string query = "DELETE FROM Clients WHERE Id=@id";
+        SqlCommand cmd = new SqlCommand(query, conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void UpdateClient(int id, string name, string phone, string email, string address)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string query = "UPDATE Clients SET Name=@n, Phone=@p, Email=@e, Address=@a WHERE Id=@id";
+        SqlCommand cmd = new SqlCommand(query, conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", phone);
+        cmd.Parameters.AddWithValue("@e", email);
+        cmd.Parameters.AddWithValue("@a", address);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static DataTable GetClients()
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string query = "SELECT * FROM Clients";
+
+        SqlDataAdapter da = new SqlDataAdapter(query, conn);
+        DataTable dt = new DataTable();
+        da.Fill(dt);
+        return dt;
+    }
+
+    // ===============================
+    //            EMPLOYEES
+    // ===============================
+
+    public static void InsertEmployee(string name, string phone, string email, string availability)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string query = "INSERT INTO Employees (Name, Phone, Email, Availability) VALUES (@n, @p, @e, @a)";
+        SqlCommand cmd = new SqlCommand(query, conn);
+
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", phone);
+        cmd.Parameters.AddWithValue("@e", email);
+        cmd.Parameters.AddWithValue("@a", availability);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static DataTable GetEmployees()
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Employees", conn);
+        DataTable dt = new DataTable();
+        da.Fill(dt);
+        return dt;
+    }
+
+    public static void DeleteEmployee(int id)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("DELETE FROM Employees WHERE Id=@id", conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void UpdateEmployee(int id, string name, string phone, string email, string availability)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string q = "UPDATE Employees SET Name=@n, Phone=@p, Email=@e, Availability=@a WHERE Id=@id";
+        SqlCommand cmd = new SqlCommand(q, conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", phone);
+        cmd.Parameters.AddWithValue("@e", email);
+        cmd.Parameters.AddWithValue("@a", availability);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    // ===============================
+    //            SERVICES
+    // ===============================
+
+    public static void InsertService(string name, double price)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string q = "INSERT INTO Services (Name, Price) VALUES (@n, @p)";
+        SqlCommand cmd = new SqlCommand(q, conn);
+
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", price);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static DataTable GetServices()
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        SqlDataAdapter da = new SqlDataAdapter("SELECT * FROM Services", conn);
+        DataTable dt = new DataTable();
+        da.Fill(dt);
+        return dt;
+    }
+
+    public static void DeleteService(int id)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("DELETE FROM Services WHERE Id=@id", conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static void UpdateService(int id, string name, double price)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string q = "UPDATE Services SET Name=@n, Price=@p WHERE Id=@id";
+        SqlCommand cmd = new SqlCommand(q, conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.AddWithValue("@n", name);
+        cmd.Parameters.AddWithValue("@p", price);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    // ===============================
+    //            CONTRACTS
+    // ===============================
+
+    public static void InsertContract(int clientId, int employeeId, int serviceId,
+        string days, bool recurring)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        string q = @"INSERT INTO Contracts (ClientId, EmployeeId, ServiceId, Days, IsRecurring)
+                     VALUES (@c, @e, @s, @d, @r)";
+
+        SqlCommand cmd = new SqlCommand(q, conn);
+
+        cmd.Parameters.AddWithValue("@c", clientId);
+        cmd.Parameters.AddWithValue("@e", employeeId);
+        cmd.Parameters.AddWithValue("@s", serviceId);
+        cmd.Parameters.AddWithValue("@d", days);
+        cmd.Parameters.AddWithValue("@r", recurring);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+
+    public static DataTable GetContracts()
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+
+        string q = @"SELECT C.Id,
+                     Cl.Name AS Client,
+                     E.Name AS Employee,
+                     S.Name AS Service,
+                     S.Price,
+                     C.Days,
+                     C.IsRecurring
+                     FROM Contracts C
+                     JOIN Clients Cl ON C.ClientId = Cl.Id
+                     JOIN Employees E ON C.EmployeeId = E.Id
+                     JOIN Services S ON C.ServiceId = S.Id";
+
+        SqlDataAdapter da = new SqlDataAdapter(q, conn);
+        DataTable dt = new DataTable();
+        da.Fill(dt);
+
+        return dt;
+    }
+
+    public static void DeleteContract(int id)
+    {
+        using SqlConnection conn = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("DELETE FROM Contracts WHERE Id=@id", conn);
+
+        cmd.Parameters.AddWithValue("@id", id);
+
+        conn.Open();
+        cmd.ExecuteNonQuery();
+    }
+}
